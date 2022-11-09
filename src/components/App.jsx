@@ -4,6 +4,7 @@ import Notiflix from 'notiflix';
 import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Button from "./Button/Button";
+import Loader from "./Loader/Loader";
 
 const API_KEY = "29840548-44be53550e175681813a70adf";
 const PER_PAGE = 12;
@@ -51,6 +52,7 @@ class App extends Component {
     searchValue: '',
     pageCnt: 1,
     galleryPhotos: [],
+    loading: false,
   }
 
   
@@ -62,62 +64,76 @@ class App extends Component {
     //console.log(total);
     //console.log(totalHits);
     //console.log(hits);
+
+    this.setState({ loading: false });
     
-    this.setState({ galleryPhotos: [...hits] });
+    this.setState(prevState => ({ galleryPhotos: [...prevState.galleryPhotos, ...hits] }));
 
     if (totalHits === 0) {
         Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
       return;
     }
-    
-  //   if (glPageCnt === 1) {
-  //     glSimpleLightbox = new SimpleLightbox('.gallery a');
-  //     Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`); 
-  //     if (totalHits > PER_PAGE) {
-  //       btnLoadMoreEl.style.display = 'block';
-  //     }
-  //   } else {
-  //     glSimpleLightbox.refresh();
-  //   }
 
     if ((this.state.pageCnt > 1) && (hits.length < PER_PAGE)) {
       Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     }
   }
 
-
   gotAnError = (error) => {
     //if (error.message == 404) { }
     if (error.message === 400) {
       if (this.state.pageCnt > (PHOTO_LIMIT/PER_PAGE)) {
-          Notiflix.Notify.info('The API is limited to return a maximum of 500 images per query.');
+        Notiflix.Notify.info('The API is limited to return a maximum of 500 images per query.');
+      } else {
+        Notiflix.Notify.warning('Reset page.');
       }
     }
   }
   
-
   componentDidUpdate(prevProps, prevState) {
     const { searchValue, pageCnt } = this.state;
 
-    if (prevState.searchValue !== searchValue)
+    if ((prevState.searchValue !== searchValue) ||
+        (prevState.pageCnt !== pageCnt))
     {
+      //console.log('getGalleryPhotoByNumPage');
+      this.setState({ loading: true });
       getGalleryPhotoByNumPage(searchValue, pageCnt, this.responseGalleryPhoto, this.gotAnError)
     }
   }
 
   handleSearchValue = searchValue => {
-    this.setState({ searchValue: searchValue });
+    if (this.state.searchValue !== searchValue) {
+      this.setState({
+        searchValue: searchValue,
+        pageCnt: 1,
+        galleryPhotos: [],
+      });
+      //console.log('gallery reset');
+    }
+  }
+
+  handleNextPage = () => {
+    //console.log('onClick ok');
+    this.setState(prevState => ({ pageCnt: prevState.pageCnt + 1 }));
+  }
+
+  handleOpenBigPhoto = (url) => {
+    console.log(url);
   }
   
   render() {
-    const { galleryPhotos } = this.state;
+    const { galleryPhotos, loading } = this.state;
 
     return (
       <>
         <div className="App">
           <Searchbar onSubmit={this.handleSearchValue} />
-          {galleryPhotos.length > 0 && <ImageGallery galleryPhotos={galleryPhotos} />}
-          {galleryPhotos.length > 0 && <Button />}
+          {galleryPhotos.length > 0 &&
+            <ImageGallery galleryPhotos={galleryPhotos} onClick={this.handleOpenBigPhoto} />
+          }
+          {loading && <Loader />}
+          {galleryPhotos.length > 0 && <Button onClick={ this.handleNextPage } />}
         </div>
       </>
     )

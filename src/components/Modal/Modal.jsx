@@ -1,9 +1,16 @@
+import PropTypes from 'prop-types';
 
-const Modal = () =>  (
+const Modal = ({ urlBigPhoto, tag}) =>  (
     <div className="Overlay">
         <div className="Modal">
-            Modal
-            <img src="" alt="" />
+            <img src={urlBigPhoto} alt={tag} />
         </div>
     </div>
 );
+
+export default Modal;
+
+Modal.propTypes = {
+    urlBigPhoto: PropTypes.string.isRequired,
+    tag: PropTypes.string,
+};
