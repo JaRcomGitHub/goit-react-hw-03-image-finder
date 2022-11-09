@@ -1,7 +1,13 @@
 
-const ImageGalleryItem = () =>  (
+//largeImageURL
+const ImageGalleryItem = ({ webformatURL, tag }) =>  (
     <li className="ImageGalleryItem">
-        <img src="" alt="" className="ImageGalleryItem-image" />
+        <img
+            src={webformatURL}
+            alt={tag}
+            className="ImageGalleryItem-image"
+            loading="lazy" 
+        />
     </li>
 );
 
