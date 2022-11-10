@@ -5,11 +5,11 @@ import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Button from "./Button/Button";
 import Loader from "./Loader/Loader";
+import Modal from "./Modal/Modal";
 
 const API_KEY = "29840548-44be53550e175681813a70adf";
 const PER_PAGE = 12;
 const PHOTO_LIMIT = 500;
-
 
 function getPixabayURL(searchTerm, pageNum) {
   const basePixabayURL = "https://pixabay.com/api/";
@@ -53,8 +53,9 @@ class App extends Component {
     pageCnt: 1,
     galleryPhotos: [],
     loading: false,
+    urlBigPhoto: '',
+    tagsBigPhoto: '',
   }
-
   
   responseGalleryPhoto = (data) => {
     //const total = data.data.total;
@@ -118,24 +119,30 @@ class App extends Component {
     this.setState(prevState => ({ pageCnt: prevState.pageCnt + 1 }));
   }
 
-  handleOpenBigPhoto = (url) => {
-    console.log(url);
+  handleBigPhoto = (url, tags) => {
+    this.setState({
+      urlBigPhoto: url,
+      tagsBigPhoto: tags,
+    });
   }
   
   render() {
-    const { galleryPhotos, loading } = this.state;
+    const { galleryPhotos, loading, urlBigPhoto, tagsBigPhoto } = this.state;
 
     return (
-      <>
-        <div className="App">
-          <Searchbar onSubmit={this.handleSearchValue} />
-          {galleryPhotos.length > 0 &&
-            <ImageGallery galleryPhotos={galleryPhotos} onClick={this.handleOpenBigPhoto} />
-          }
-          {loading && <Loader />}
-          {galleryPhotos.length > 0 && <Button onClick={ this.handleNextPage } />}
-        </div>
-      </>
+      <div className="App">
+        <Searchbar onSubmit={this.handleSearchValue} />
+        {galleryPhotos.length > 0 &&
+          <ImageGallery galleryPhotos={galleryPhotos} onClick={this.handleBigPhoto} />
+        }
+        {loading && <Loader />}
+        {galleryPhotos.length > 0 && <Button onClick={this.handleNextPage} />}
+        {urlBigPhoto.length > 0 &&
+          <Modal urlImage={urlBigPhoto} tag={tagsBigPhoto}
+            onClose={() => this.handleBigPhoto('', '')} 
+          />
+        }
+      </div>
     )
   };
 };

@@ -3,12 +3,12 @@ import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 
 const ImageGallery = ({ galleryPhotos, onClick }) =>  (
   <ul className="ImageGallery">
-    {galleryPhotos.map(({ id, largeImageURL, webformatURL, tag }) => (
+    {galleryPhotos.map(({ id, largeImageURL, webformatURL, tags }) => (
       <ImageGalleryItem
         key={id}
         largeImageURL={largeImageURL}
         webformatURL={webformatURL}
-        tag={tag}
+        tags={tags}
         onClick={onClick}
        />
     ))}
@@ -22,7 +22,7 @@ ImageGallery.propTypes = {
     id: PropTypes.number.isRequired,
     largeImageURL: PropTypes.string.isRequired,
     webformatURL: PropTypes.string.isRequired,
-    tag: PropTypes.string,
+    tags: PropTypes.string,
   })).isRequired,
   onClick: PropTypes.func.isRequired,
 };

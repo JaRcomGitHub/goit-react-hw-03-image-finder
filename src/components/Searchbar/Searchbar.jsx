@@ -14,7 +14,7 @@ class Searchbar extends React.Component {
         event.preventDefault();
         const { searchValue } = this.state;
 
-        if (searchValue) {
+        if (searchValue.trim() !== '') {
             this.props.onSubmit(searchValue);
         }
     }

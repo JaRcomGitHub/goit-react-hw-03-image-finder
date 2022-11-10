@@ -1,16 +1,14 @@
 import PropTypes from 'prop-types';
-// import Modal from "../Modal/Modal";
 
-const ImageGalleryItem = ({ largeImageURL, webformatURL, tag, onClick }) =>  (
+const ImageGalleryItem = ({ largeImageURL, webformatURL, tags, onClick }) =>  (
     <li className="ImageGalleryItem">
         <img
             src={webformatURL}
-            alt={tag}
+            alt={tags}
             className="ImageGalleryItem-image"
             loading="lazy" 
-            onClick={() => onClick(largeImageURL)}
+            onClick={() => onClick(largeImageURL, tags)}
         />
-        {/* <Modal urlBigPhoto={largeImageURL} tag={tag} /> */}
     </li>
 );
 
@@ -19,6 +17,6 @@ export default ImageGalleryItem;
 ImageGalleryItem.propTypes = {
     largeImageURL: PropTypes.string.isRequired,
     webformatURL: PropTypes.string.isRequired,
-    tag: PropTypes.string,
+    tags: PropTypes.string,
     onClick: PropTypes.func.isRequired,
 };
